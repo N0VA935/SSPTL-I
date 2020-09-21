@@ -17,10 +17,8 @@ import java.util.ArrayList;
  */
 public class SSPTL {
 
-    private static ArrayList<String> TAG = new ArrayList<String>();
-    private static ArrayList<String> OPCODE = new ArrayList<String>();
-    private static ArrayList<String> OPER = new ArrayList<String>();
-    //private static boolean exit = false;
+    private static ArrayList<String> COMENT = new ArrayList<String>();
+    private static boolean exit = false;
     private static String etq = "ETIQUETA= ";
     private static String CODOP = "CODOP= ";
     private static String op = "OPERANDO= ";
@@ -35,30 +33,40 @@ public class SSPTL {
         FileReader fr = new FileReader(txt);
         BufferedReader br = new BufferedReader(fr);
         
-        while((line = br.readLine())!= null){
+        while((line = br.readLine())!= null && exit == false){
                 String[] instructionSet = line.split("\t");
                 for (int i = 0; i < instructionSet.length; i++) {
+                    contAux++;
+                    if(instructionSet[i].startsWith(";") && instructionSet[i].length() < 80) {
+                        COMENT.add(instructionSet[i]);
+                    }
                     if(instructionSet[i].matches("^\\p{Alpha}*\\p{Alnum}*") && (i == 0 && instructionSet[i].length() <= 8)) {
                         if(instructionSet[i].isEmpty()){
-                            TAG.add(etq + "NULL");
+                            COMENT.add(etq + "NULL");
                         } else {
-                            TAG.add(etq + instructionSet[i]);
+                            COMENT.add(etq + instructionSet[i]);
                         }
-                    }else
-                        if(instructionSet[i].matches("(\\p{Alpha}*)|(\\p{Alpha}*.{0,1}\\p{Alpha}*)|(\\p{Alpha}*)") && ((i == 1) && instructionSet[i].length() <= 5)){
-                            if(instructionSet[i].isEmpty()){
-                                OPCODE.add(CODOP + "NULL");
-                            } else {
-                                OPCODE.add(CODOP + instructionSet[i]);
-                            }
+                    }
+                    if(instructionSet[i].matches("(\\p{Alpha}*)|(\\p{Alpha}*.{0,1}\\p{Alpha}*)|(\\p{Alpha}*)") && ((i == 1) && instructionSet[i].length() <= 5)){
+                        if((instructionSet[i].equals("end") || instructionSet[i].equals("End") || instructionSet[i].equals("END"))) {
+                            exit=true;
                         }else
-                            if(instructionSet[i].matches("\\p{Punct}*\\p{Alnum}*") && i==2) {
-                                if(instructionSet[i].isEmpty()){
-                                    OPER.add(op + "NULL");
-                                } else {
-                                    OPER.add(op + instructionSet[i]);
-                                }
+                            if(instructionSet.length == 2) {
+                                COMENT.add(CODOP + instructionSet[i]);
+                                COMENT.add(op + "NULL");
+                            } else{
+                                COMENT.add(CODOP + instructionSet[i]);
                             }
+                        
+                    }
+                    if(instructionSet[i].matches("\\p{Punct}*\\p{Alnum}*") && i==2) {
+                        if(instructionSet[i].isEmpty() && contAux == 1){
+                            COMENT.add(op + "NULL");
+                            contAux = 0;
+                        } else {
+                            COMENT.add(op + instructionSet[i]);
+                        }
+                    }
             }
         }
         
@@ -68,17 +76,10 @@ public class SSPTL {
     public static void main(String[] args) throws IOException {
         reader("src/txt/P1ASM.txt");
         
-       
-         for (String etiqueta : TAG) {
-            System.out.println(etiqueta);
+        for (int i = 0; i < COMENT.size()-1; i++) {
+            System.out.println(COMENT.get(i));
             
             
         }
-        for (String codop : OPCODE) {
-                System.out.println(codop);
-        }
-        for (String op : OPER) {
-                    System.out.println(op);
-                }
     }
-    }
+}
