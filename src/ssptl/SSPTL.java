@@ -40,42 +40,71 @@ public class SSPTL {
                     if(instructionSet[i].startsWith(";") && instructionSet[i].length() < 80) {
                         COMENT.add(instructionSet[i]);
                     }
-                    if(instructionSet[i].matches("^\\p{Alpha}*\\p{Alnum}*") && (i == 0 && instructionSet[i].length() <= 8)) {
+                    else if(instructionSet[i].matches("^\\p{Alpha}*\\p{Alnum}*") && (i == 0 && instructionSet[i].length() <= 8)) {
                         if(instructionSet[i].isEmpty()){
                             COMENT.add(etq + "NULL");
                         } else {
                             COMENT.add(etq + instructionSet[i]);
                         }
                     }
-                    if(instructionSet[i].matches("(\\p{Alpha}*)|(\\p{Alpha}*.{0,1}\\p{Alpha}*)|(\\p{Alpha}*)") && ((i == 1) && instructionSet[i].length() <= 5)){
+                    
+                    else if(instructionSet[i].matches("(\\p{Alpha}*)|(\\p{Alpha}*.{0,1}\\p{Alpha}*)|(\\p{Alpha}*)|(\\p{Alpha}*.{0,1}\\p{Alpha}*)")
+                            && ((i == 1) && instructionSet[i].length() <= 5)){
                         if((instructionSet[i].equals("end") || instructionSet[i].equals("End") || instructionSet[i].equals("END"))) {
                             exit=true;
                         }else
                             if(instructionSet.length == 2) {
                                 COMENT.add(CODOP + instructionSet[i]);
                                 COMENT.add(op + "NULL");
+                                COMENT.add("\n");
                             } else{
                                 COMENT.add(CODOP + instructionSet[i]);
                             }
                         
                     }
-                    if(instructionSet[i].matches("\\p{Punct}*\\p{Alnum}*") && i==2) {
+                    else if(instructionSet[i].matches("\\p{Punct}*\\p{Alnum}*") && i==2) {
                         if(instructionSet[i].isEmpty() && contAux == 1){
                             COMENT.add(op + "NULL");
                             contAux = 0;
                         } else {
                             COMENT.add(op + instructionSet[i]);
                         }
+                        COMENT.add("\n");
+                    } else{
+                        COMENT.add("Error de codigo");
                     }
             }
         }
         
         fr.close();
     }
+    public static boolean numberCheck(String prueba) {
+        boolean flag = false;
+        for(char c : prueba.toCharArray()){
+            if(Character.isDigit(c)){
+                 flag = true;
+                 break;
+            } else {
+                 flag = false;
+            }
+        }
+        return flag;
+    }
+    public static void checker() {
+        for (int i = 0; i < COMENT.size()-1; i++) {
+            if(COMENT.get(i).contains("CODOP= ")) {
+                
+                if(numberCheck(COMENT.get(i)) == true) {
+                    COMENT.set(i, "CODOP= Error de CODOP");
+                    System.out.println("entro");
+                } 
+            }
+        }
+    }
     
     public static void main(String[] args) throws IOException {
         reader("src/txt/P1ASM.txt");
-        
+        checker();
         for (int i = 0; i < COMENT.size()-1; i++) {
             System.out.println(COMENT.get(i));
             
