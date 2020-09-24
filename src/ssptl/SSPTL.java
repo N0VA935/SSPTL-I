@@ -121,6 +121,22 @@ public class SSPTL {
         }   // Fin de for
         return flag;    // Devolucion de bandera
     }   // Fin de funcion
+    /**
+     * Funcion boleana para descubrir si una etiqueta empieza con un numero
+     * @param line -Linea de entrada de texto
+     * @return True en case de tener un numero al inicio de la etiqueta
+     * False en caso de no tener un numero
+     */
+    public static boolean numberStartCheck(String line) {
+        boolean flag = false;   // Bandera
+        String[] separator = line.split(" ");   // Split para separar la etiqueta de la impresion
+        if(Character.isDigit(separator[1].charAt(0)))   // Revisa si es un digito al inicio de la cadena
+            flag = true;
+        else 
+            flag = false;
+        
+        return flag;    // Retorno de bandera
+    }   // Fin de metodo
     
     /**
      * Metodo para detectar si se encuentra un numero en la arraylist
@@ -131,6 +147,11 @@ public class SSPTL {
             if(INST.get(i).contains("CODOP= ")) // Si contiene la palabra CODOP
                 if(numberCheck(INST.get(i)))    // Si el metodo tiene un numero
                     INST.set(i, "CODOP= Error de CODOP"); // Cambia el valor por un error del CODOP
+        }
+        for (int i = 0; i < INST.size()-1; i++) {
+            if(INST.get(i).contains("ETIQUETA= ")) // Si contiene la palabra CODOP
+                if(numberStartCheck(INST.get(i)))    // Si el metodo tiene un numero
+                    INST.set(i, "ETIQUETA= Error de Etiqueta"); // Cambia el valor por un error del CODOP
         }
     }   // Fin de metodo
     
