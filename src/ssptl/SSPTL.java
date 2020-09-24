@@ -45,7 +45,7 @@ public class SSPTL {
                     if(instructionSet[i].startsWith(";") && instructionSet[i].length() < 80) {  // Condicional para los comentarios
                         INST.add(instructionSet[i]);
                     }
-                    else if(instructionSet[i].matches("^\\p{Alpha}*\\p{Alnum}*") && (i == 0 && instructionSet[i].length() <= 8)) {  // Condicional para etiquetas
+                    else if(instructionSet[i].matches("^\\p{Alpha}*\\w*") && (i == 0 && instructionSet[i].length() <= 8)) {  // Condicional para etiquetas
                         if(instructionSet[i].isEmpty()){    // Si se encuentra la primera posicion vacia
                             INST.add(etq + "NULL");   // Adicion de null
                         } else {
